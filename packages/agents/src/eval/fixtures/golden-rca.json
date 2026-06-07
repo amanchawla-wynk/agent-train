@@ -1,0 +1,23 @@
+[
+  {
+    "id": "regression-001",
+    "appId": "ios_main",
+    "crashTitle": "EXC_BAD_ACCESS in PlaybackController",
+    "expectedPrNumbers": [432],
+    "minEvidenceCount": 1
+  },
+  {
+    "id": "velocity-001",
+    "appId": "ios_main",
+    "crashTitle": "SIGABRT in NetworkClient",
+    "expectedPrNumbers": [418],
+    "minEvidenceCount": 1
+  },
+  {
+    "id": "stable-001",
+    "appId": "ios_main",
+    "crashTitle": "NSInvalidArgumentException in MovieRepository",
+    "expectedPrNumbers": [401],
+    "minEvidenceCount": 1
+  }
+]

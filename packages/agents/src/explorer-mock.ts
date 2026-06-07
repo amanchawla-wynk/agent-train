@@ -1,4 +1,5 @@
-import type { CrashGroup, ExplorerContextPackage } from '@agent-train/shared';
+import type { CrashGroup, ExplorerContextPackage, RelatedHistoryItem } from '@agent-train/shared';
+import { computeTimingScore } from '@agent-train/shared';
 
 const FILE_PATTERNS: Record<string, { symbol: string; pr: number; title: string }> = {
   'PlaybackController.swift': {
@@ -37,6 +38,7 @@ export function buildMockExplorerPackage(
   crashGroup: CrashGroup,
   githubRepo: string,
   stackSummary?: string,
+  relatedHistory: RelatedHistoryItem[] = [],
 ): ExplorerContextPackage {
   const file = extractFile(crashGroup.signature, crashGroup.title);
   const pattern = FILE_PATTERNS[file] ?? {
@@ -44,6 +46,8 @@ export function buildMockExplorerPackage(
     pr: 100,
     title: 'Recent change touching crash file',
   };
+
+  const mergedAt = new Date().toISOString().slice(0, 10);
 
   return {
     crashGroupId: crashGroup.id,
@@ -54,9 +58,14 @@ export function buildMockExplorerPackage(
         repo: githubRepo,
         number: pattern.pr,
         title: pattern.title,
-        mergedAt: new Date().toISOString().slice(0, 10),
+        mergedAt,
+        timingScore: computeTimingScore(crashGroup.firstSeenVersion, mergedAt),
+        filesOverlap: [file],
       },
     ],
+    dependencies: [`Callers of ${pattern.symbol}`],
+    relatedHistory,
+    summary: `Mock explorer: crash in ${file}, likely related to recent PR #${pattern.pr}.`,
     stackSummary:
       stackSummary ??
       `${crashGroup.title} — ${crashGroup.signature}`,

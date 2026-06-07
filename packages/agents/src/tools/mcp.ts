@@ -18,20 +18,46 @@ export interface McpClients {
   firebaseTools: ToolSet;
 }
 
-async function connectMcpServer(config: McpServerConfig): Promise<MCPClient | null> {
-  try {
-    const client = await createMCPClient({
+const MCP_CONNECT_TIMEOUT_MS = 5000;
+
+function withTimeout<T>(promise: Promise<T>, ms: number): Promise<T> {
+  return new Promise((resolve, reject) => {
+    const timer = setTimeout(() => reject(new Error(`MCP connect timed out after ${ms}ms`)), ms);
+    promise
+      .then((value) => {
+        clearTimeout(timer);
+        resolve(value);
+      })
+      .catch((err) => {
+        clearTimeout(timer);
+        reject(err);
+      });
+  });
+}
+
+async function connectMcpServerOnce(config: McpServerConfig): Promise<MCPClient> {
+  return withTimeout(
+    createMCPClient({
       transport: new Experimental_StdioMCPTransport({
         command: config.command,
         args: config.args ?? [],
         env: sanitizeSubprocessEnv(config.env),
       }),
-    });
-    return client;
-  } catch (err) {
-    console.warn(`[mcp] Failed to connect ${config.name}:`, err);
-    return null;
+    }),
+    MCP_CONNECT_TIMEOUT_MS,
+  );
+}
+
+async function connectMcpServer(config: McpServerConfig): Promise<MCPClient | null> {
+  for (let attempt = 1; attempt <= 2; attempt++) {
+    try {
+      return await connectMcpServerOnce(config);
+    } catch (err) {
+      console.warn(`[mcp] Failed to connect ${config.name} (attempt ${attempt}):`, err);
+      if (attempt === 2) return null;
+    }
   }
+  return null;
 }
 
 export async function createMcpClients(options: {

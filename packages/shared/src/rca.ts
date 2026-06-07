@@ -1,5 +1,22 @@
 import { z } from 'zod';
 
+export const StackContextSchema = z.object({
+  issueId: z.string(),
+  title: z.string(),
+  stackSummary: z.string(),
+  stackFrames: z.array(z.string()),
+});
+
+export type StackContext = z.infer<typeof StackContextSchema>;
+
+export const RelatedHistoryItemSchema = z.object({
+  type: z.enum(['crash', 'pr', 'ticket']),
+  ref: z.string(),
+  whyRelevant: z.string(),
+});
+
+export type RelatedHistoryItem = z.infer<typeof RelatedHistoryItemSchema>;
+
 export const EvidenceSchema = z.object({
   source: z.enum(['serena', 'crashlytics', 'github', 'jira']),
   ref: z.string(),
@@ -61,6 +78,8 @@ export const ExplorerPrSchema = z.object({
   number: z.number(),
   title: z.string(),
   mergedAt: z.string(),
+  timingScore: z.number().min(0).max(1).optional(),
+  filesOverlap: z.array(z.string()).optional(),
 });
 
 export const ExplorerContextPackageSchema = z.object({
@@ -68,8 +87,15 @@ export const ExplorerContextPackageSchema = z.object({
   filesTouched: z.array(z.string()),
   symbols: z.array(ExplorerSymbolSchema),
   recentPrs: z.array(ExplorerPrSchema),
+  dependencies: z.array(z.string()).default([]),
+  relatedHistory: z.array(RelatedHistoryItemSchema).default([]),
+  summary: z.string().default(''),
   stackSummary: z.string(),
   unknowns: z.array(z.string()),
+});
+
+export const ExplorerContextExtractSchema = ExplorerContextPackageSchema.omit({
+  crashGroupId: true,
 });
 
 export type ExplorerContextPackage = z.infer<typeof ExplorerContextPackageSchema>;
@@ -78,13 +104,15 @@ export function deriveEdgesFromReport(
   report: Pick<RcaReportBody, 'crashGroupId' | 'suspectPrs'>,
   skillVersion: string,
   observedAt: string,
+  runId?: string,
 ): GraphEdge[] {
+  const source = runId ? `${skillVersion}:${runId}` : skillVersion;
   return report.suspectPrs.map((pr: SuspectPR) => ({
     from: `crash:${report.crashGroupId}`,
     to: `pr:${pr.repo}#${pr.number}`,
     relation: 'introduced_by' as const,
     confidence: pr.confidence,
-    source: skillVersion,
+    source,
     observedAt,
   }));
 }

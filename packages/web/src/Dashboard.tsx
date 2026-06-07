@@ -7,6 +7,17 @@ interface AppInfo {
   id: string;
 }
 
+interface RcaRunStatus {
+  runId: string;
+  status: string;
+  report: RcaReport | null;
+  runLog: {
+    phases?: Array<{ phase: string; durationMs: number }>;
+    integrationLevel?: string;
+  } | null;
+  error: string | null;
+}
+
 const DAY_OPTIONS = [7, 14, 30] as const;
 
 export default function Dashboard() {
@@ -19,6 +30,7 @@ export default function Dashboard() {
   const [rcaLoadingId, setRcaLoadingId] = useState<string | null>(null);
   const [rcaError, setRcaError] = useState<string | null>(null);
   const [rcaReport, setRcaReport] = useState<RcaReport | null>(null);
+  const [rcaPhases, setRcaPhases] = useState<string[]>([]);
 
   useEffect(() => {
     fetch('/api/apps')
@@ -57,25 +69,63 @@ export default function Dashboard() {
     if (selectedApp) void loadCrashGroups();
   }, [selectedApp, days, loadCrashGroups]);
 
+  const pollRun = async (runId: string): Promise<RcaReport> => {
+    for (let i = 0; i < 120; i++) {
+      const res = await fetch(`/api/rca/${runId}`);
+      if (!res.ok) {
+        const body = (await res.json()) as { error?: string };
+        throw new Error(body.error ?? 'Failed to poll RCA run');
+      }
+      const status = (await res.json()) as RcaRunStatus;
+      if (status.runLog?.phases) {
+        setRcaPhases(status.runLog.phases.map((p) => p.phase));
+      }
+      if (status.status === 'completed' && status.report) return status.report;
+      if (status.status === 'failed' || status.status === 'budget_exceeded') {
+        throw new Error(status.error ?? `RCA ${status.status}`);
+      }
+      await new Promise((r) => setTimeout(r, 2000));
+    }
+    throw new Error('RCA timed out');
+  };
+
   const runRca = async (crashGroupId: string) => {
     setRcaLoadingId(crashGroupId);
     setRcaError(null);
+    setRcaPhases([]);
     try {
-      const res = await fetch('/api/rca', {
+      let res = await fetch('/api/rca', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ crashGroupId, appId: selectedApp, days }),
       });
+
+      if (res.status === 503) {
+        res = await fetch('/api/rca?sync=true', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ crashGroupId, appId: selectedApp, days }),
+        });
+      }
+
       if (!res.ok) {
         const body = (await res.json()) as { error?: string };
         throw new Error(body.error ?? 'RCA failed');
       }
-      const report = (await res.json()) as RcaReport;
-      setRcaReport(report);
+
+      if (res.status === 202) {
+        const body = (await res.json()) as { runId: string };
+        const report = await pollRun(body.runId);
+        setRcaReport(report);
+      } else {
+        const report = (await res.json()) as RcaReport;
+        setRcaReport(report);
+      }
     } catch (err) {
       setRcaError(err instanceof Error ? err.message : 'RCA failed');
     } finally {
       setRcaLoadingId(null);
+      setRcaPhases([]);
     }
   };
 
@@ -140,6 +190,12 @@ export default function Dashboard() {
         {rcaError && (
           <div className="mb-4 rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
             {rcaError}
+          </div>
+        )}
+
+        {rcaPhases.length > 0 && (
+          <div className="mb-4 rounded-md border border-blue-200 bg-blue-50 px-4 py-3 text-sm text-blue-800">
+            RCA phases: {rcaPhases.join(' → ')}
           </div>
         )}
 

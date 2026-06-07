@@ -1,4 +1,4 @@
-import type { CrashGroup } from '@agent-train/shared';
+import type { CrashGroup, RelatedHistoryItem, StackContext } from '@agent-train/shared';
 import type { LlmConfig } from './llm.js';
 
 export interface AppAgentConfig {
@@ -19,7 +19,8 @@ export interface AgentRuntimeConfig {
 export interface RcaInput {
   crashGroup: CrashGroup;
   app: AppAgentConfig;
-  stackSummary?: string;
+  stackContext?: StackContext;
+  relatedHistory?: RelatedHistoryItem[];
 }
 
 export type ExplorerMode = 'live' | 'mock';

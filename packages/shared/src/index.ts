@@ -13,7 +13,10 @@ export {
   RcaReportBodySchema,
   GraphEdgeSchema,
   GraphEdgeRelationSchema,
+  StackContextSchema,
+  RelatedHistoryItemSchema,
   ExplorerContextPackageSchema,
+  ExplorerContextExtractSchema,
   ExplorerSymbolSchema,
   ExplorerPrSchema,
   deriveEdgesFromReport,
@@ -22,5 +25,8 @@ export type {
   RcaReportBody,
   RcaReport,
   GraphEdge,
+  StackContext,
+  RelatedHistoryItem,
   ExplorerContextPackage,
 } from './rca.js';
+export { computeTimingScore, computeFilesOverlap } from './timing.js';

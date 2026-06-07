@@ -1,5 +1,6 @@
 import cors from 'cors';
 import express from 'express';
+import { resolveIntegrationLevel } from '@agent-train/agents';
 import { loadConfig } from './config.js';
 import { createCrashlyticsProvider } from './crashlytics/provider.js';
 import { checkDbConnection } from './db/pool.js';
@@ -34,6 +35,13 @@ app.get('/api/health', async (_req, res) => {
           : 'mock',
       github: config.githubToken ? 'configured' : 'missing',
       postgres: dbOk ? 'connected' : config.databaseUrl ? 'disconnected' : 'not_configured',
+      level: resolveIntegrationLevel({
+        serenaLive: Boolean(config.serenaMcpCommand),
+        firebaseLive:
+          process.env.FIREBASE_MCP_ENABLED === 'true' ||
+          Boolean(process.env.FIREBASE_MCP_COMMAND),
+        githubConfigured: Boolean(config.githubToken),
+      }).level,
     },
   });
 });

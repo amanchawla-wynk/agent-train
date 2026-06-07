@@ -58,8 +58,9 @@ describe('deriveEdgesFromReport', () => {
           },
         ],
       },
-      'rca-skill-v1',
+      'rca-skill-v2',
       '2026-06-05T12:00:00.000Z',
+      'rca-run-1',
     );
 
     expect(edges).toHaveLength(1);
@@ -68,7 +69,7 @@ describe('deriveEdgesFromReport', () => {
       to: 'pr:myorg/ios-app#432',
       relation: 'introduced_by',
       confidence: 0.9,
-      source: 'rca-skill-v1',
+      source: 'rca-skill-v2:rca-run-1',
       observedAt: '2026-06-05T12:00:00.000Z',
     });
   });
@@ -89,6 +90,9 @@ describe('ExplorerContextPackageSchema', () => {
         },
       ],
       stackSummary: 'EXC_BAD_ACCESS at PlaybackController.swift:142',
+      dependencies: ['PlaybackController callers'],
+      relatedHistory: [],
+      summary: 'Crash in playback controller',
       unknowns: [],
     });
     expect(result.success).toBe(true);
