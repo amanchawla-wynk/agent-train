@@ -1,7 +1,10 @@
 import { useCallback, useEffect, useState } from 'react';
 import type { CrashGroup, RcaReport } from '@agent-train/shared';
+import PrdReviewTab from './PrdReviewTab';
 import RcaReportPanel from './RcaReportPanel';
 import { scoreTier, tierBadgeClasses } from './scoreTier';
+
+type DashboardTab = 'crashes' | 'prd';
 
 interface AppInfo {
   id: string;
@@ -21,6 +24,7 @@ interface RcaRunStatus {
 const DAY_OPTIONS = [7, 14, 30] as const;
 
 export default function Dashboard() {
+  const [activeTab, setActiveTab] = useState<DashboardTab>('prd');
   const [apps, setApps] = useState<AppInfo[]>([]);
   const [selectedApp, setSelectedApp] = useState('');
   const [days, setDays] = useState<number>(7);
@@ -133,14 +137,42 @@ export default function Dashboard() {
     <div className="min-h-screen bg-slate-50 text-slate-900">
       <header className="border-b border-slate-200 bg-white">
         <div className="mx-auto max-w-6xl px-6 py-5">
-          <h1 className="text-2xl font-semibold tracking-tight">Crash Digest</h1>
+          <h1 className="text-2xl font-semibold tracking-tight">Engineering Intelligence</h1>
           <p className="mt-1 text-sm text-slate-500">
-            Ranked crash triage queue — regression-weighted priority scoring
+            PRD gap review and crash triage — human-approved intelligence
           </p>
+          <nav className="mt-4 flex gap-2">
+            <button
+              type="button"
+              onClick={() => setActiveTab('prd')}
+              className={`rounded-md px-4 py-2 text-sm font-medium ${
+                activeTab === 'prd'
+                  ? 'bg-violet-600 text-white'
+                  : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+              }`}
+            >
+              PRD Review
+            </button>
+            <button
+              type="button"
+              onClick={() => setActiveTab('crashes')}
+              className={`rounded-md px-4 py-2 text-sm font-medium ${
+                activeTab === 'crashes'
+                  ? 'bg-blue-600 text-white'
+                  : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+              }`}
+            >
+              Crashes
+            </button>
+          </nav>
         </div>
       </header>
 
       <main className="mx-auto max-w-6xl px-6 py-6">
+        {activeTab === 'prd' ? (
+          <PrdReviewTab />
+        ) : (
+          <>
         <div className="mb-6 flex flex-wrap items-end gap-4">
           <label className="flex flex-col gap-1 text-sm">
             <span className="font-medium text-slate-700">App</span>
@@ -271,16 +303,18 @@ export default function Dashboard() {
                     <button
                       type="button"
                       disabled
-                      title="Phase 3"
+                      title="Deferred"
                       className="cursor-not-allowed rounded-md border border-slate-200 bg-slate-50 px-4 py-2 text-sm font-medium text-slate-400"
                     >
-                      Create Jira (Phase 3)
+                      Create Jira (deferred)
                     </button>
                   </div>
                 </article>
               );
             })}
           </div>
+        )}
+          </>
         )}
       </main>
 

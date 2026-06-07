@@ -1,0 +1,7 @@
+{
+  "id": "onboarding-v2",
+  "title": "Onboarding v2 PRD",
+  "space": "PRODUCT",
+  "lastModified": "2026-06-01T14:30:00Z",
+  "body": "# Onboarding v2 PRD\n\n## Overview\nReplace the legacy onboarding flow with a streamlined first-run experience.\n\n## Goals\n- Increase completion rate to 80%\n- Reduce drop-off on permissions screen\n\n## User stories\n- As a new user, I can complete onboarding in under 60 seconds.\n- As a new user, I understand why permissions are requested.\n\n## Acceptance criteria\n- Given a fresh install, when the user opens the app, then onboarding starts within 1 second.\n- Given permissions denied, when the user retries, then a fallback path is offered.\n- Given onboarding complete, when the user relaunches, then onboarding does not repeat.\n\n## Edge cases\n- Offline during onboarding shows cached content.\n- Deep link into onboarding mid-flow resumes correctly.\n- Accessibility: VoiceOver reads all primary CTAs.\n\n## Analytics\n- onboarding_start, onboarding_step, onboarding_complete\n- Funnel by step with 24h retention cohort\n\n## Rollout\n- 5% internal dogfood → 20% beta → 100% over 2 weeks\n- Feature flag `onboarding_v2_enabled` with kill switch\n\n## Ownership\n- PM: Alice Chen\n- Engineering: Mobile Platform\n- QA: Release QA pod\n"
+}

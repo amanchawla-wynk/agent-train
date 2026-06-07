@@ -7,9 +7,10 @@
     "test": "pnpm -r test",
     "typecheck": "pnpm -r typecheck",
     "predev": "pnpm --filter @agent-train/shared build && pnpm --filter @agent-train/agents build",
-    "db:up": "docker compose up -d",
+    "db:check": "pnpm --filter @agent-train/server db:check",
     "db:migrate": "pnpm --filter @agent-train/server db:migrate",
     "eval:rca": "pnpm --filter @agent-train/agents eval:rca",
+    "eval:prd": "pnpm --filter @agent-train/agents eval:prd",
     "dev": "concurrently -n server,web -c blue,green \"pnpm --filter @agent-train/server dev\" \"pnpm --filter @agent-train/web dev\""
   },
   "devDependencies": {

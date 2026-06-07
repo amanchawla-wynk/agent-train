@@ -204,7 +204,7 @@ export async function runRca(
 
     // extract (included in explore phase for live; log separately for observability)
     phaseStart = Date.now();
-    logPhase(tracker, 'extract', phaseStart, { durationMs: 0 });
+    logPhase(tracker, 'extract', phaseStart);
     emitProgress();
 
     // verify

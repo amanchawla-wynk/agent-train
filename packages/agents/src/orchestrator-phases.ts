@@ -7,7 +7,9 @@ export type RcaPhase =
   | 'extract'
   | 'verify'
   | 'synthesize'
-  | 'deriveEdges';
+  | 'deriveEdges'
+  | 'fetch'
+  | 'analyze';
 
 export interface RcaPhaseLog {
   phase: RcaPhase;

@@ -1,0 +1,7 @@
+{
+  "id": "playback-redesign",
+  "title": "Playback Redesign PRD",
+  "space": "PRODUCT",
+  "lastModified": "2026-05-28T10:00:00Z",
+  "body": "# Playback Redesign PRD\n\n## Overview\nRedesign the video playback experience for iOS to improve reliability and reduce crashes.\n\n## Goals\n- Reduce playback-related crashes by 30%\n- Improve startup time for resumed sessions\n\n## User stories\n- As a user, I want playback to resume where I left off.\n- As a user, I want fewer buffering interruptions.\n\n## Acceptance criteria\n- Playback resumes within 2 seconds on app launch.\n\n## Technical notes\n- Refactor PlaybackController nullability.\n- Coordinate with MovieRepository changes.\n\n## Analytics\n- Track playback_start events.\n"
+}

@@ -1,7 +1,7 @@
 import { readFile } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { scoreCrashGroup } from '@agent-train/shared';
+import { DEFAULT_SCORING_CONTEXT, scoreCrashGroup } from '@agent-train/shared';
 import { buildMockExplorerPackage } from '../explorer-mock.js';
 import { verifyAndCleanReport } from '../verify.js';
 
@@ -32,7 +32,13 @@ function mockCrashGroup(c: GoldenCase) {
     latestVersion: '2.5.0',
     isRegression: true,
   };
-  return { ...base, priorityScore: scoreCrashGroup(base) };
+  return {
+    ...base,
+    priorityScore: scoreCrashGroup(base, {
+      ...DEFAULT_SCORING_CONTEXT,
+      currentVersion: base.latestVersion,
+    }),
+  };
 }
 
 async function main(): Promise<void> {

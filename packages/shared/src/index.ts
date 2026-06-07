@@ -30,3 +30,19 @@ export type {
   ExplorerContextPackage,
 } from './rca.js';
 export { computeTimingScore, computeFilesOverlap } from './timing.js';
+export {
+  PrdGapCategorySchema,
+  PrdGapSeveritySchema,
+  PrdGapSchema,
+  PrdGapReportBodySchema,
+  PrdDocumentSchema,
+  PrdListItemSchema,
+  derivePrdGapEdges,
+} from './prd.js';
+export type {
+  PrdGap,
+  PrdGapReportBody,
+  PrdGapReport,
+  PrdDocument,
+  PrdListItem,
+} from './prd.js';

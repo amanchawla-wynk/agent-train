@@ -18,7 +18,7 @@ export const RelatedHistoryItemSchema = z.object({
 export type RelatedHistoryItem = z.infer<typeof RelatedHistoryItemSchema>;
 
 export const EvidenceSchema = z.object({
-  source: z.enum(['serena', 'crashlytics', 'github', 'jira']),
+  source: z.enum(['serena', 'crashlytics', 'github', 'jira', 'confluence']),
   ref: z.string(),
   detail: z.string(),
 });
@@ -54,6 +54,7 @@ export const GraphEdgeRelationSchema = z.enum([
   'introduced_by',
   'implements',
   'originates_from',
+  'has_gap',
 ]);
 
 export const GraphEdgeSchema = z.object({

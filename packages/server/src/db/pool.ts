@@ -16,12 +16,23 @@ export function getPool(): pg.Pool {
 }
 
 export async function checkDbConnection(): Promise<boolean> {
+  const result = await checkDbConnectionDetail();
+  return result.ok;
+}
+
+export async function checkDbConnectionDetail(): Promise<{
+  ok: boolean;
+  error?: string;
+}> {
   try {
     const db = getPool();
     await db.query('SELECT 1');
-    return true;
-  } catch {
-    return false;
+    return { ok: true };
+  } catch (err) {
+    return {
+      ok: false,
+      error: err instanceof Error ? err.message : String(err),
+    };
   }
 }
 

@@ -15,6 +15,13 @@ export {
   type RcaRunLog,
   type RcaRunOptions,
 } from './rca.js';
+export {
+  runPrdGapReview,
+  buildPrdAgentRuntimeConfig,
+  type PrdGapResult,
+  type PrdGapRunLog,
+  type PrdGapRunOptions,
+} from './prd-gap.js';
 export { runExplorer } from './explorer.js';
 export { buildMockExplorerPackage } from './explorer-mock.js';
 export { deriveEdgesFromReport } from './graph/edges.js';
@@ -24,6 +31,7 @@ export type {
   AgentRuntimeConfig,
   AppAgentConfig,
   RcaInput,
+  PrdGapInput,
   ExplorerMode,
   IntegrationStatus,
 } from './types.js';

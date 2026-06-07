@@ -20,12 +20,14 @@ export interface ServerConfig {
   bigQueryProjectId: string;
   crashlyticsDataset: string;
   apps: AppConfig[];
+  prdIds: string[];
   digestWebhookUrl: string;
   digestTopN: number;
   digestCron: string;
   databaseUrl: string;
   llm: LlmConfig;
   rcaMaxBudgetUsd: number;
+  prdMaxBudgetUsd: number;
   githubToken?: string;
   serenaMcpCommand?: string;
   serenaMcpArgs?: string[];
@@ -64,12 +66,17 @@ export function loadConfig(): ServerConfig {
     bigQueryProjectId: process.env.BIGQUERY_PROJECT_ID ?? '',
     crashlyticsDataset: process.env.CRASHLYTICS_DATASET ?? 'firebase_crashlytics',
     apps: parseApps(),
+    prdIds: (process.env.PRDS ?? 'playback-redesign,onboarding-v2')
+      .split(',')
+      .map((s) => s.trim())
+      .filter(Boolean),
     digestWebhookUrl: process.env.DIGEST_WEBHOOK_URL ?? '',
     digestTopN: Number(process.env.DIGEST_TOP_N ?? 10),
     digestCron: process.env.DIGEST_CRON ?? '0 9 * * *',
     databaseUrl: process.env.DATABASE_URL ?? '',
     llm: loadLlmConfigFromEnv(),
     rcaMaxBudgetUsd: Number(process.env.RCA_MAX_BUDGET_USD ?? 0.5),
+    prdMaxBudgetUsd: Number(process.env.PRD_MAX_BUDGET_USD ?? 0.3),
     githubToken: process.env.GITHUB_TOKEN,
     serenaMcpCommand: process.env.SERENA_MCP_COMMAND,
     serenaMcpArgs: process.env.SERENA_MCP_ARGS?.split(',').filter(Boolean),

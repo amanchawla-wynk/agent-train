@@ -28,13 +28,40 @@ Works with zero GCP setup. Fixture data is loaded from `packages/server/fixtures
 
 **Note:** With batch-only BigQuery export, 24h velocity windows are coarse (daily batch granularity). This is acceptable for Phase 1.
 
+## Local Postgres (Homebrew)
+
+Phase 2 RCA persistence and the context graph need Postgres. Use a **local Homebrew** install (Docker is not used):
+
+```bash
+brew install postgresql@17
+brew services start postgresql@17
+
+# Add psql/createdb to PATH if needed (Apple Silicon example):
+# echo 'export PATH="/opt/homebrew/opt/postgresql@17/bin:$PATH"' >> ~/.zshrc
+
+createdb agenttrain
+```
+
+In `.env`, set `DATABASE_URL` to your local user (no password is typical on macOS):
+
+```
+DATABASE_URL=postgresql://YOUR_MAC_USERNAME@localhost:5432/agenttrain
+```
+
+Then:
+
+```bash
+pnpm db:check      # verify connection
+pnpm db:migrate    # create tables (edges, rca_runs)
+```
+
 ## Quick start
 
 ```bash
 pnpm install
 cp .env.example .env
-pnpm db:up          # start Postgres (Phase 2 graph edges)
-pnpm db:migrate     # create edges table
+# configure DATABASE_URL (see Local Postgres above), then:
+pnpm db:migrate
 pnpm dev
 ```
 
@@ -50,7 +77,7 @@ pnpm dev
 | `pnpm test` | Run Vitest in shared + server |
 | `pnpm typecheck` | Typecheck all packages |
 | `pnpm --filter @agent-train/server digest:run` | Manually post digest to Teams webhook |
-| `pnpm db:up` | Start local Postgres via docker-compose |
+| `pnpm db:check` | Verify `DATABASE_URL` connects to local Postgres |
 | `pnpm db:migrate` | Apply database migrations |
 
 ## Environment
@@ -67,8 +94,15 @@ See [.env.example](.env.example). Key variables:
 - `OPENAI_API_KEY` / `GOOGLE_GENERATIVE_AI_API_KEY` — LLM providers (DIRECT mode)
 - `LLM_EXPLORER` / `LLM_SYNTHESIS` — model tiering as `provider:model`
 - `GITHUB_TOKEN` — read-only token for suspect PR lookup
-- `DATABASE_URL` — Postgres for `crash → PR` graph edges
+- `DATABASE_URL` — Postgres for graph edges and async runs
 - `SERENA_MCP_COMMAND` — optional; without it, Explorer uses mock context
+
+### Phase 3 (PRD gap review)
+
+- `PRDS` — comma-separated PRD ids (fixtures in `packages/server/fixtures/prds/`)
+- `PRD_MAX_BUDGET_USD` — per-run budget for gap review
+- `LLM_REVIEW` — optional review-tier model (defaults to synthesis model)
+- `ATLASSIAN_MCP_ENABLED` — opt-in live Confluence read (default mock)
 
 ## API
 
@@ -76,6 +110,9 @@ See [.env.example](.env.example). Key variables:
 - `GET /api/apps` — configured app list
 - `GET /api/crash-groups?app=<id>&days=<n>` — ranked crash groups by `priorityScore` desc
 - `POST /api/rca` — run RCA for `{ crashGroupId, appId }`, returns `RcaReport`
+- `GET /api/prds` — list configured PRDs
+- `POST /api/prd-review` — run gap review for `{ prdId }`, returns `PrdGapReport` (or `{ runId }` async)
+- `GET /api/prd-review/:runId` — poll PRD review status
 
 ## Project structure
 

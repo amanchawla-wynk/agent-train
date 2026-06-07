@@ -15,7 +15,8 @@
     "build": "tsc && cp -r src/skills dist/",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
-    "eval:rca": "tsx src/eval/eval-runner.ts"
+    "eval:rca": "tsx src/eval/eval-runner.ts",
+    "eval:prd": "tsx src/eval/prd-eval-runner.ts"
   },
   "dependencies": {
     "@agent-train/shared": "workspace:*",

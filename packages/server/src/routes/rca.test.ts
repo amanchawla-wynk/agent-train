@@ -84,6 +84,7 @@ function baseConfig(databaseUrl: string): ServerConfig {
         githubRepo: 'myorg/ios-app',
       },
     ],
+    prdIds: ['playback-redesign', 'onboarding-v2'],
     digestWebhookUrl: '',
     digestTopN: 10,
     digestCron: '0 9 * * *',
@@ -93,6 +94,7 @@ function baseConfig(databaseUrl: string): ServerConfig {
       synthesisModel: 'openai:gpt-4o',
     },
     rcaMaxBudgetUsd: 0.5,
+    prdMaxBudgetUsd: 0.3,
   };
 }
 

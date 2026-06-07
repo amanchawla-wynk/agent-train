@@ -39,12 +39,12 @@ export async function fetchStackContext(
   firebaseTools: ToolSet,
   fallback?: StackContext,
 ): Promise<StackContext> {
-  const getIssue = firebaseTools.get_crash_issue;
-  if (getIssue && 'execute' in getIssue && typeof getIssue.execute === 'function') {
+  const getIssue = firebaseTools.get_crash_issue as
+    | { execute?: (input: { issueId: string }, options: unknown) => Promise<unknown> }
+    | undefined;
+  if (getIssue?.execute) {
     try {
-      const result = await (
-        getIssue as { execute: (input: { issueId: string }) => Promise<unknown> }
-      ).execute({ issueId: crashGroup.id });
+      const result = await getIssue.execute({ issueId: crashGroup.id }, {});
       const parsed = parseFirebaseStack(result, crashGroup);
       if (parsed) return parsed;
     } catch (err) {

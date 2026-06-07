@@ -14,8 +14,10 @@ export interface McpServerConfig {
 export interface McpClients {
   serena: MCPClient | null;
   firebase: MCPClient | null;
+  atlassian: MCPClient | null;
   serenaTools: ToolSet;
   firebaseTools: ToolSet;
+  atlassianTools: ToolSet;
 }
 
 const MCP_CONNECT_TIMEOUT_MS = 5000;
@@ -63,20 +65,24 @@ async function connectMcpServer(config: McpServerConfig): Promise<MCPClient | nu
 export async function createMcpClients(options: {
   serena?: McpServerConfig;
   firebase?: McpServerConfig;
+  atlassian?: McpServerConfig;
 }): Promise<McpClients> {
   const serena = options.serena ? await connectMcpServer(options.serena) : null;
   const firebase = options.firebase ? await connectMcpServer(options.firebase) : null;
+  const atlassian = options.atlassian ? await connectMcpServer(options.atlassian) : null;
 
   const serenaTools = (serena ? await serena.tools() : {}) as ToolSet;
   const firebaseTools = (firebase ? await firebase.tools() : {}) as ToolSet;
+  const atlassianTools = (atlassian ? await atlassian.tools() : {}) as ToolSet;
 
-  return { serena, firebase, serenaTools, firebaseTools };
+  return { serena, firebase, atlassian, serenaTools, firebaseTools, atlassianTools };
 }
 
 export async function closeMcpClients(clients: McpClients): Promise<void> {
   await Promise.all([
     clients.serena?.close(),
     clients.firebase?.close(),
+    clients.atlassian?.close(),
   ]);
 }
 

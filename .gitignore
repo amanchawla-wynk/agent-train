@@ -38,8 +38,6 @@ packages/web/dist/
 # --- TypeScript incremental ---
 *.tsbuildinfo
 
-# --- Docker (local volume data, not compose files) ---
-docker-data/
 pgdata/
 
 # --- OS ---

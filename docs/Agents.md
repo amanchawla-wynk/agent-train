@@ -20,11 +20,12 @@ There is no required cloud or hosting platform. The API, web app, agent code, LL
 
 | Phase | Ships | Status |
 |---|---|---|
-| 1 | Crash digest — ranked crash triage + dashboard | **build this first** |
-| 2 | One-click RCA — agent diagnoses a crash, produces a report | next |
-| 3 | RCA -> Jira draft (human-approved) | later |
-| 4 | Spec-aware code review (requirement vs. implementation) | later |
-| 5 | Platform — cross-lifecycle queries (emerges from the graph) | later |
+| 1 | Crash digest — ranked crash triage + dashboard | done |
+| 2 | One-click RCA — agent diagnoses a crash, produces a report | done |
+| 3 | PRD gap review — Confluence PRD gaps on dashboard (mock-first) | **current** |
+| 4 | Tech-doc draft + human-approved Confluence publish | later |
+| 5 | PR code review vs linked PRD | later |
+| 6 | RCA → Jira + cross-lifecycle graph queries | later |
 
 Specs live in `docs/`. Do not start a phase until the previous one meets its acceptance criteria.
 
@@ -54,6 +55,7 @@ AgentTrain/
   docs/
     Phase1.md
     Phase2.md
+    Phase3.md
     Phase3-5.md
   packages/
     shared/      # pure, tested TS types + scoring logic (no I/O)

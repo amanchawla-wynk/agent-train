@@ -1,0 +1,13 @@
+[
+  {
+    "prdId": "playback-redesign",
+    "expectedCategories": ["rollout", "edge_cases", "ownership"],
+    "minGaps": 2
+  },
+  {
+    "prdId": "onboarding-v2",
+    "expectedCategories": [],
+    "minGaps": 0,
+    "maxGaps": 2
+  }
+]

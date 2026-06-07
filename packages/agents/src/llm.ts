@@ -2,11 +2,12 @@ import { createGoogleGenerativeAI } from '@ai-sdk/google';
 import { createOpenAI } from '@ai-sdk/openai';
 import type { LanguageModel } from 'ai';
 
-export type Tier = 'explorer' | 'synthesis';
+export type Tier = 'explorer' | 'synthesis' | 'review';
 
 export interface LlmConfig {
   explorerModel: string;
   synthesisModel: string;
+  reviewModel?: string;
   gatewayBaseUrl?: string;
   gatewayApiKey?: string;
   openaiApiKey?: string;
@@ -22,7 +23,9 @@ function parseModelRef(ref: string): { provider: string; model: string } {
 }
 
 function resolveModelRef(tier: Tier, config: LlmConfig): string {
-  return tier === 'explorer' ? config.explorerModel : config.synthesisModel;
+  if (tier === 'explorer') return config.explorerModel;
+  if (tier === 'review') return config.reviewModel ?? config.synthesisModel;
+  return config.synthesisModel;
 }
 
 export function modelIdFor(tier: Tier, config: LlmConfig): string {
@@ -58,6 +61,7 @@ export function loadLlmConfigFromEnv(): LlmConfig {
   return {
     explorerModel: process.env.LLM_EXPLORER ?? 'google:gemini-2.0-flash',
     synthesisModel: process.env.LLM_SYNTHESIS ?? 'openai:gpt-4o',
+    reviewModel: process.env.LLM_REVIEW || undefined,
     gatewayBaseUrl: process.env.LLM_GATEWAY_BASE_URL || undefined,
     gatewayApiKey: process.env.LLM_GATEWAY_API_KEY || undefined,
     openaiApiKey: process.env.OPENAI_API_KEY,

@@ -7,6 +7,8 @@ import { checkDbConnection } from './db/pool.js';
 import { scheduleDailyDigest } from './jobs/dailyDigest.js';
 import { createAppsRouter } from './routes/apps.js';
 import { createCrashGroupsRouter } from './routes/crashGroups.js';
+import { createPrdReviewRouter } from './routes/prdReview.js';
+import { createPrdsRouter } from './routes/prds.js';
 import { createRcaRouter } from './routes/rca.js';
 
 const config = loadConfig();
@@ -42,6 +44,11 @@ app.get('/api/health', async (_req, res) => {
           Boolean(process.env.FIREBASE_MCP_COMMAND),
         githubConfigured: Boolean(config.githubToken),
       }).level,
+      atlassian:
+        process.env.ATLASSIAN_MCP_ENABLED === 'true' ||
+        Boolean(process.env.ATLASSIAN_MCP_COMMAND?.trim())
+          ? 'configured'
+          : 'mock',
     },
   });
 });
@@ -49,6 +56,8 @@ app.get('/api/health', async (_req, res) => {
 app.use('/api/apps', createAppsRouter(config));
 app.use('/api/crash-groups', createCrashGroupsRouter(config, provider));
 app.use('/api/rca', createRcaRouter(config, provider));
+app.use('/api/prds', createPrdsRouter(config));
+app.use('/api/prd-review', createPrdReviewRouter(config));
 
 scheduleDailyDigest(config, provider);
 
