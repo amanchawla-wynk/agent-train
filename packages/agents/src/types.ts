@@ -1,0 +1,32 @@
+import type { CrashGroup } from '@agent-train/shared';
+import type { LlmConfig } from './llm.js';
+
+export interface AppAgentConfig {
+  id: string;
+  githubRepo: string;
+  firebaseProjectId?: string;
+}
+
+export interface AgentRuntimeConfig {
+  llm: LlmConfig;
+  maxBudgetUsd: number;
+  githubToken?: string;
+  serenaMcpCommand?: string;
+  serenaMcpArgs?: string[];
+  serenaRepoPath?: string;
+}
+
+export interface RcaInput {
+  crashGroup: CrashGroup;
+  app: AppAgentConfig;
+  stackSummary?: string;
+}
+
+export type ExplorerMode = 'live' | 'mock';
+
+export interface IntegrationStatus {
+  serena: ExplorerMode;
+  firebase: 'connected' | 'mock' | 'disconnected';
+  github: 'configured' | 'missing';
+  postgres: 'connected' | 'disconnected';
+}

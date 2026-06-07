@@ -1,0 +1,24 @@
+[
+  {
+    "issueId": "beta-regression-001",
+    "issueTitle": "Fatal error in OnboardingFlow",
+    "issueSubtitle": "OnboardingFlow.swift:201",
+    "eventCount": 95,
+    "usersAffected": 42,
+    "eventsLast24h": 60,
+    "eventsPrev24h": 10,
+    "firstSeenVersion": "3.0.0-beta.2",
+    "latestVersion": "3.0.0-beta.2"
+  },
+  {
+    "issueId": "beta-stable-001",
+    "issueTitle": "NSURLSession timeout in ImageLoader",
+    "issueSubtitle": "ImageLoader.swift:33",
+    "eventCount": 500,
+    "usersAffected": 120,
+    "eventsLast24h": 15,
+    "eventsPrev24h": 14,
+    "firstSeenVersion": "2.9.0",
+    "latestVersion": "3.0.0-beta.1"
+  }
+]

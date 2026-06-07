@@ -1,0 +1,46 @@
+[
+  {
+    "issueId": "regression-001",
+    "issueTitle": "EXC_BAD_ACCESS in PlaybackController",
+    "issueSubtitle": "PlaybackController.swift:142",
+    "eventCount": 320,
+    "usersAffected": 180,
+    "eventsLast24h": 150,
+    "eventsPrev24h": 40,
+    "firstSeenVersion": "2.5.0",
+    "latestVersion": "2.5.0"
+  },
+  {
+    "issueId": "stable-001",
+    "issueTitle": "NSInvalidArgumentException in MovieRepository",
+    "issueSubtitle": "MovieRepository.swift:88",
+    "eventCount": 12000,
+    "usersAffected": 4500,
+    "eventsLast24h": 400,
+    "eventsPrev24h": 390,
+    "firstSeenVersion": "1.2.0",
+    "latestVersion": "2.4.0"
+  },
+  {
+    "issueId": "velocity-001",
+    "issueTitle": "SIGABRT in NetworkClient",
+    "issueSubtitle": "NetworkClient.swift:55",
+    "eventCount": 800,
+    "usersAffected": 220,
+    "eventsLast24h": 200,
+    "eventsPrev24h": 20,
+    "firstSeenVersion": "2.3.0",
+    "latestVersion": "2.4.0"
+  },
+  {
+    "issueId": "zero-users-001",
+    "issueTitle": "Rare crash in DebugPanel",
+    "issueSubtitle": "DebugPanel.swift:12",
+    "eventCount": 3,
+    "usersAffected": 0,
+    "eventsLast24h": 1,
+    "eventsPrev24h": 0,
+    "firstSeenVersion": "2.1.0",
+    "latestVersion": "2.2.0"
+  }
+]

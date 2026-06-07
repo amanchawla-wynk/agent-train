@@ -1,0 +1,25 @@
+{
+  "name": "agent-train",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "pnpm -r build",
+    "test": "pnpm -r test",
+    "typecheck": "pnpm -r typecheck",
+    "predev": "pnpm --filter @agent-train/shared build && pnpm --filter @agent-train/agents build",
+    "db:up": "docker compose up -d",
+    "db:migrate": "pnpm --filter @agent-train/server db:migrate",
+    "dev": "concurrently -n server,web -c blue,green \"pnpm --filter @agent-train/server dev\" \"pnpm --filter @agent-train/web dev\""
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "pnpm": {
+    "overrides": {
+      "uuid": "^11.1.0"
+    }
+  }
+}
